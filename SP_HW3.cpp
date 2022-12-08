@@ -135,15 +135,31 @@ class Table {
 
     public: Table( int tokenPage ) {
         this->tokenPage = tokenPage ;
-    }
+    } // constructor the class, give it table number
 
     public: int GetTablePage() {
         return this->tokenPage ;        
-    }
+    } 
 
     public: void PushNewToken( string token ) {
-        this->token[tokenAmount] = token ;
-        tokenAmount ++ ;
+        try {
+            this->token[tokenAmount] = token ;
+            tokenAmount ++ ;
+        }
+        catch ( exception &e ) {
+            cerr << e.what() << " ," << "in line : " << __LINE__ << endl ;
+            throw invalid_argument( e.what() ) ;
+        }
+    } // push a new token to this table 
+
+    public: void PushNewTokenByIndex( string token, int index ) {
+        try {
+            this->token[index] = token ;
+        }
+        catch ( exception &e ) {
+            cerr << e.what() << " ," << "in line : " << __LINE__ << endl ;
+            throw invalid_argument( e.what() ) ;
+        }        
     }
 
     public: void PrintAllToken(){
@@ -156,7 +172,18 @@ class Table {
             cerr << e.what() << " ," << "in line : " << __LINE__ << endl ;
             throw invalid_argument( e.what() ) ;
         }
-    }
+    } // print everyToken in this table
+
+    public: string GetIndex( int i ) {
+        try {
+            return token[i] ;
+        }
+        catch ( exception &e ) {
+            cerr << e.what() << " ," << "in line : " << __LINE__ << endl ;
+            throw invalid_argument( e.what() ) ;
+        }
+        
+    } // according the index return token
 
     public: void SaveOnePageTokenFormTable( string fileName ) {
         try {
@@ -176,7 +203,7 @@ class Table {
             throw  e.what() ;
         }
 
-    }
+    } // accordding the fileName to read total Token, every token will stand one array
 
 } ;
 
@@ -186,7 +213,7 @@ struct Line_of_Token {
 
 class Program {
 
-    vector<Line_of_Token> oneLine_of_Program ;
+    private: vector<Line_of_Token> oneLine_of_Program ;
 
     public: void SaveProgramFormInput_txt( string fileName ) {
         try {
@@ -215,22 +242,37 @@ class Program {
         }        
     } 
 
+    public: vector<string> GetIndexLine( int i ) {
+        return oneLine_of_Program[i].token_of_oneLine ;
+    }    
+
+    
+
 } ;
+
 struct Error {
     int line = 0 ;
     string errorMessage = "";
 } ;
 
+
 class SyntaxAnalysis {
-    vector<Error> error ;
-    bool SyntaxAnalysisThisLine( auto program ) {
+
+    bool SyntaxAnalysisThisLine( vector<string> &program ) {
         return true ;
     }
 
 } ;
 
+class Compiler {
+
+    vector<Error> error ;
+    
+} ;
+
 int main(int argc,char **argv) {
     try {
+        
         Table delimiter_table( 1 ) ;
         Table command_table( 2 ) ;
         delimiter_table.SaveOnePageTokenFormTable("Table1.txt") ;
@@ -241,7 +283,6 @@ int main(int argc,char **argv) {
         command_table.PrintAllToken() ;
         Program program ;
         program.SaveProgramFormInput_txt("e1.txt") ;
-
     }
     catch ( exception& e ) {
         cerr << e.what() << " ," << "in line : " << __LINE__ << endl ;    
